@@ -20,6 +20,9 @@ jobs:
           java-version: "17"
           distribution: "temurin"
 
+      - name: Make mvnw executable
+        run: chmod +x ./mvnw
+
       - name: Build with Maven
         run: ./mvnw clean package
 
@@ -44,4 +47,5 @@ jobs:
 
       - name: Image details
         run: |
-          echo "Pushed image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}
+          echo "Pushed image: docker.io/${{ secrets.DOCKERHUB_USERNAME }}/demo-java-project:latest"
+          echo "Built with Maven"
