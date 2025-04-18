@@ -1,28 +1,30 @@
-name: Build and Publish Docker Image
+name: Maven Build and Test
 
 on:
   push:
-    branches:
-      - "main"
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
-  build-and-publish:
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: "17"
-          distribution: "temurin"
-
-      - name: Make mvnw executable
-        run: chmod +x ./mvnw  # Add this line
-
-      - name: Build with Maven Wrapper
-        run: ./mvnw clean package
-        working-directory: ./demoJavaProject
+    - uses: actions/checkout@v4
+    - name: Set up JDK 11
+      uses: actions/setup-java@v4
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+    - name: Cache Maven dependencies
+      uses: actions/cache@v4
+      path: ~/.m2/repository
+      key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+      restore-keys: |
+        ${{ runner.os }}-maven-
+    - name: Build and Test with Maven
+      run: |
+        #!/bin/bash
+        echo "Starting Maven build and test..."
+        mvn clean install -B
+        echo "Maven build and test completed."
