@@ -1,12 +1,28 @@
-- name: Set up JDK 17
-  uses: actions/setup-java@v3
-  with:
-    java-version: '17'
-    distribution: 'temurin'
+name: Build and Publish Docker Image
 
-- name: Make mvnw executable
-  run: chmod +x ./mvnw
+on:
+  push:
+    branches:
+      - "main"
 
-- name: Build with Maven Wrapper
-  run: ./mvnw clean package
-  working-directory: ./demoJavaProject
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: "17"
+          distribution: "temurin"
+
+      - name: Make mvnw executable
+        run: chmod +x ./mvnw  # Add this line
+
+      - name: Build with Maven Wrapper
+        run: ./mvnw clean package
+        working-directory: ./demoJavaProject
